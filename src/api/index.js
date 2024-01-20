@@ -29,4 +29,4 @@ export const getApiClient = (apiUrl, config) => {
     return apiClient
   }
 
-  export const placeholderApi = getApiClient('https://sore-book-production.up.railway.app/api/',{})
+  export const placeholderApi = getApiClient('http://timtvogt.pythonanywhere.com//api/',{})
