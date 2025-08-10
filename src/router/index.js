@@ -26,6 +26,11 @@ import IndexLayout from '@/views/Layout/IndexLayout.vue'
             name: 'blog',
             component: () => import('../views/BlogView.vue')
           },
+          {
+            path: '/blog/:id',
+            name: 'blog-detail',
+            component: () => import('../views/BlogDetailView.vue')
+          },
 
 
           {
@@ -40,11 +45,7 @@ import IndexLayout from '@/views/Layout/IndexLayout.vue'
             component: () => import('../views/DetailedView.vue')
           },
 
-          // {
-          //   path: '/blog/:id',
-          //   name: 'Blog Detailed',
-          //   component: () => import('../views/BlogDetailView.vue')
-          // },
+          // End routes
 
 
         ]
