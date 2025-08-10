@@ -26,5 +26,8 @@ EXPOSE 8000
 RUN mkdir -p /code/staticfiles \
 	&& poetry run python manage.py collectstatic --noinput
 
-# Start de app via Poetry
-CMD poetry run gunicorn blog_project.wsgi:application --bind 0.0.0.0:$PORT
+# Maak startscript uitvoerbaar en gebruik het als entrypoint
+RUN chmod +x /code/start.sh
+
+# Start via script (migrate + gunicorn)
+CMD ["/code/start.sh"]
