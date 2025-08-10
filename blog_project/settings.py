@@ -172,6 +172,9 @@ STATICFILES_STORAGE = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Allow serving media files via Django in non-DEBUG when explicitly enabled
+SERVE_MEDIA = os.getenv('SERVE_MEDIA', '1') == '1'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
