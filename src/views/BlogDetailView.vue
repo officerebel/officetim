@@ -7,6 +7,7 @@
     </q-breadcrumbs>
 
     <q-card v-if="post">
+      <q-img v-if="post.image" :src="normalizedImage(post.image)" :ratio="16/9" class="q-img__cover"/>
       <q-card-section>
         <div class="text-subtitle2 green">{{ post.date }}</div>
         <div class="text-h5 green q-mt-xs">{{ post.title }}</div>
@@ -28,6 +29,7 @@ import postApi from '@/api/posts.js'
 
 const route = useRoute()
 const post = ref(null)
+const normalizedImage = (url) => (url ? url.replace(/^http:\/\//, 'https://') : '')
 
 const load = async (id) => {
   const { status, data } = await tryExceptAwait(() => postApi.getPostById(id))

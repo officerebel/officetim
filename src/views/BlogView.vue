@@ -5,6 +5,7 @@
     <br>
             <div v-for="post in posts.slice(0, 100)" :key="post.id">
           <q-card>
+          <q-img v-if="post.image" :src="normalizedImage(post.image)" :ratio="16/9" class="q-img__cover"/>
           <q-card-section>
               <div class="text-subtitle2 green ">  {{ post.date}}</div>
                             <div class="text-subtitle2 green ">  {{ post.date}}</div>
@@ -25,6 +26,10 @@ import {tryExceptAwait} from '@/utils'
 import postApi from '@/api/posts.js'
 
 const posts = ref([])
+const normalizedImage = (url) => {
+    if (!url) return ''
+    return url.replace(/^http:\/\//, 'https://')
+}
 onMounted(async ()=> {
     const {status,data} = await tryExceptAwait(
         postApi.getPosts
