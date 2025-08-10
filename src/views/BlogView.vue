@@ -4,8 +4,11 @@
     <p class="green">Here I will post my snippets blogs articles and inspiration</p>
     <br>
             <div v-for="post in posts.slice(0, 100)" :key="post.id">
-          <q-card>
-          <q-img v-if="post.image" :src="normalizedImage(post.image)" :ratio="16/9" class="q-img__cover"/>
+              <q-card>
+              <q-img v-if="post.image"
+                  :src="normalizedImage(post.image)"
+                  :ratio="16/9"
+                  class="q-img__cover"/>
           <q-card-section>
               <div class="text-subtitle2 green ">  {{ post.date}}</div>
                             <div class="text-subtitle2 green ">  {{ post.date}}</div>
