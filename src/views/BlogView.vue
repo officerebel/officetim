@@ -12,10 +12,7 @@
                                 {{ post.title }}
                             </router-link>
           </q-card-section>
-          <q-card-section class="green">
-              {{ post.body}}
-                            <!-- <q-btn label="read more" :to="{ name: 'blog-detail', params: { id: post.id } }" /> -->
-          </q-card-section>
+          
           <q-separator light />
           </q-card>
           <br>
