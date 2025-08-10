@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +23,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!s%#$)@+(&wdmrg3)g&9to56q0qi-u(ez**u6&e35_q+_lw&xm'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-dev-key-change-me')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app']
+
+# Django 4.0+ requires exact origins with scheme; wildcards are not supported.
+# You can override via env var, e.g. CSRF_TRUSTED_ORIGINS="https://your-app.up.railway.app,https://example.com"
+_csrf_from_env = os.getenv('CSRF_TRUSTED_ORIGINS')
+if _csrf_from_env:
+    CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_from_env.split(',') if o.strip()]
+else:
+    # Default to the current Railway domain; adjust if your deploy URL changes
+    CSRF_TRUSTED_ORIGINS = [
+        'https://unused-twig-production.up.railway.app'
+    ]
 
 
 # Application definition
@@ -43,13 +57,14 @@ INSTALLED_APPS = [
 ]
 
 
-rest_framework ={
-    'DEFAULT_PERMISSION_CLASSES':[
-    'rest_framework.permissions.AllowAny']
-
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
 }
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
    'corsheaders.middleware.CorsMiddleware',
@@ -86,18 +101,25 @@ WSGI_APPLICATION = 'blog_project.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # django_project/settings.py
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
-        "HOST": "db",  # set in docker-compose.yml
-        "PORT": 5432,  # default postgres port
+
+
+
+
+_db_url = os.getenv('DATABASE_URL')
+try:
+    default_db = dj_database_url.parse(_db_url, conn_max_age=600) if _db_url else None
+except Exception:
+    default_db = None
+
+if not default_db:
+    default_db = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
+
+DATABASES = {
+    'default': default_db
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -133,6 +155,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Use manifest storage in production when static files are collected.
+# To temporarily avoid admin 500 errors before collectstatic, set USE_MANIFEST_STATIC=0 in env.
+_use_manifest = os.getenv('USE_MANIFEST_STATIC', '1') == '1'
+STATICFILES_STORAGE = (
+    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    if _use_manifest else
+    'whitenoise.storage.CompressedStaticFilesStorage'
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -142,3 +174,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+

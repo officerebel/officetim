@@ -16,8 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.http import JsonResponse, HttpResponse
+
+
+def home(_request):
+    return JsonResponse(
+        {
+            "app": "blog_project",
+            "status": "ok",
+            "endpoints": {
+                "posts": "/api/posts/",
+                "post_detail": "/api/posts/<id>/",
+                "admin": "/admin/",
+                "health": "/healthz",
+            },
+        }
+    )
 
 urlpatterns = [
+    path('', home, name='home'),
+    path('healthz', lambda r: HttpResponse('ok'), name='healthz'),
     path('admin/', admin.site.urls),
-    path('api/posts/', include('posts.urls')),
+    # Mount app under /api/ so endpoints are /api/posts/...
+    path('api/', include('posts.urls')),
 ]

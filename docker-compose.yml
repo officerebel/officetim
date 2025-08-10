@@ -1,19 +1,28 @@
-version: "3.9"
+version: '3.9'
+
 services:
   web:
-    build: .
-    command: python /code/manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
+    build:
+      context: .
+    command: ["./wait-for-db.sh", "db:5432", "poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
     ports:
-      - 8000:8000
+      - "8000:8000"
     depends_on:
       - db
+    env_file:
+      - blog_project/.env
+    volumes:
+      - .:/code
+      - ./wait-for-db.sh:/code/wait-for-db.sh
+
   db:
-      image: postgres:13
-      volumes:
-        - postgres_data:/var/lib/postgresql/data/
-      environment:
-        - "POSTGRES_HOST_AUTH_METHOD=trust"
+    image: postgres:13
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
 volumes:
   postgres_data:

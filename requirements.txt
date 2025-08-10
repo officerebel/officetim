@@ -1,6 +1,9 @@
-asgiref==3.5.2
-Django==4.0.4
-sqlparse==0.4.2
-psycopg2-binary==2.9.3
-django-cors-headers
-django-rest_framework
+# Synced with pyproject.toml to ensure Railway installs the correct deps
+Django==4.2.2
+djangorestframework==3.16.0
+django-cors-headers==4.0.0
+python-dotenv==1.1.0
+psycopg2-binary==2.9.10
+dj-database-url==2.3.0
+gunicorn==23.0.0
+whitenoise==6.9.0
