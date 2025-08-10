@@ -29,4 +29,4 @@ export const getApiClient = (apiUrl, config) => {
     return apiClient
   }
 
-  export const placeholderApi = getApiClient('http://timtvogt.pythonanywhere.com//api/',{})
+  export const placeholderApi = getApiClient('https://timtvogt.pythonanywhere.com/api/', {})

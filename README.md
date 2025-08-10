@@ -1,29 +1,78 @@
-# timblog
+# Officetim (Vue 3 + Vite + Quasar)
 
-This template should help get you started developing with Vue 3 in Vite.
+Frontend for officetim built with Vue 3, Vite, and Quasar. Deployed on Netlify.
 
-## Recommended IDE Setup
+## Quick start
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- Install deps: `npm install`
+- Dev server: `npm run dev`
+- Build: `npm run build`
+- Preview build: `npm run preview`
 
-## Customize configuration
+## Deploying to Netlify
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+You can deploy via the Netlify UI (CI/CD from GitHub) or with the Netlify CLI.
 
-## Project Setup
+### Netlify UI (recommended)
+1. In Netlify, click “Add new site” → “Import an existing project” → choose GitHub repo `officerebel/officetim`.
+2. Build settings:
+   - Build command: `npm run build`
+   - Publish directory: `dist`
+3. SPA routing: ensure one of these is present (already added in repo):
+   - `netlify.toml`
+     [build]
+       command = "npm run build"
+       publish = "dist"
 
-```sh
-npm install
-```
+     [[redirects]]
+       from = "/*"
+       to = "/index.html"
+       status = 200
+   - or `public/_redirects` with: `/*    /index.html   200`
+4. Remove unexpected Next.js plugin if present: Site settings → Build & deploy → Plugins → remove `@netlify/plugin-nextjs`.
+5. Deploy. Each push to `main` will auto-deploy.
 
-### Compile and Hot-Reload for Development
+### Netlify CLI (manual deploy)
+Prereqs: `npm i -g netlify-cli`, then `netlify login`.
 
-```sh
-npm run dev
-```
+Typical flow:
+- Build locally: `npm run build`
+- Link local folder to the Netlify site (once): `netlify link --id <YOUR_SITE_ID>`
+- Deploy prebuilt dist to production (skips Netlify build/plugins): `netlify deploy --prod --no-build --dir=dist`
 
-### Compile and Minify for Production
+Current live site (linked): https://monumental-custard-961dac.netlify.app
 
-```sh
-npm run build
-```
+To show at https://officetim.netlify.app, rename the site in Netlify UI:
+- Site settings → Site details → Site information → Change site name → `officetim` (must be unique).
+
+## API configuration
+
+The app calls a Django API hosted on PythonAnywhere.
+- Base URL is defined in `src/api/index.js`:
+  export const placeholderApi = getApiClient('https://timtvogt.pythonanywhere.com/api/', {})
+- Vite dev proxy exists for `/api` requests only in development (see `vite.config.js`). Production must use a full HTTPS URL (already configured) to avoid mixed-content/CORS issues.
+
+## Tech notes
+
+- Vue 3 + Vite + Quasar
+- Router uses HTML5 history. SPA fallback is required on Netlify (provided via `netlify.toml` or `public/_redirects`).
+
+## Troubleshooting
+
+- Error: “@netlify/plugin-nextjs” expecting Next.js output
+  - Cause: Next.js plugin enabled in Netlify UI on a non-Next project.
+  - Fix: Remove the plugin in Site settings → Build & deploy → Plugins, or deploy with `--no-build` and a prebuilt `dist`.
+
+- 404s on page refresh or deep links
+  - Ensure SPA redirects are active (`/* → /index.html 200`).
+
+- Mixed content / blocked API calls
+  - Ensure API base URL uses `https://` in `src/api/index.js`.
+
+## Recommended IDE setup
+
+VS Code + Volar (disable Vetur) + TypeScript Vue Plugin.
+
+References:
+- Vite docs: https://vitejs.dev/config/
+- Netlify deploys: https://docs.netlify.com/site-deploys/overview/
