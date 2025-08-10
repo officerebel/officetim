@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    # Image uploads
+    'django_cleanup.apps.CleanupConfig',
     'posts',
 ]
 
@@ -165,6 +167,10 @@ STATICFILES_STORAGE = (
     if _use_manifest else
     'whitenoise.storage.CompressedStaticFilesStorage'
 )
+
+# Media (user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
