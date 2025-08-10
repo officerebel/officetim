@@ -1,6 +1,6 @@
 import { placeholderApi } from '@/api/index.js'
 
-const basePath = 'posts/posts/'
+const basePath = 'posts/'
 
 export default {
     async getPosts() {

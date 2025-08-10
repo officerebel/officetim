@@ -29,4 +29,5 @@ export const getApiClient = (apiUrl, config) => {
     return apiClient
   }
 
-  export const placeholderApi = getApiClient('https://timtvogt.pythonanywhere.com/api/', {})
+  // Production API (Rails/Railway)
+  export const placeholderApi = getApiClient('https://unused-twig-production.up.railway.app/api/', {})

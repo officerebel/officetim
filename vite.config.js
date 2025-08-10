@@ -11,9 +11,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://timtvogt.pythonanywhere.com/api/posts/posts/',
+  target: 'https://unused-twig-production.up.railway.app/api/',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '/'
+  rewrite: (path) => path.replace(/^\/api\//, ''
         )
       }
     }
