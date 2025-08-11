@@ -19,6 +19,7 @@ from django.urls import include, path
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve as static_serve
 
 
 def home(_request):
@@ -41,6 +42,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Mount app under /api/ so endpoints are /api/posts/...
     path('api/', include('posts.urls')),
+    # Always serve media files from MEDIA_ROOT at /media/ (suitable for small apps)
+    path('media/<path:path>', static_serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
 # Serve media in development

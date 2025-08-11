@@ -13,6 +13,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +29,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app', 'testserver']
 
 # Django 4.0+ requires exact origins with scheme; wildcards are not supported.
 # You can override via env var, e.g. CSRF_TRUSTED_ORIGINS="https://your-app.up.railway.app,https://example.com"
@@ -119,6 +120,18 @@ if not default_db:
         'NAME': str(BASE_DIR / 'db.sqlite3'),
     }
 
+# In production, require a real DATABASE_URL to avoid resetting data on deploys
+if not DEBUG:
+    if not _db_url:
+        raise ImproperlyConfigured(
+            "DATABASE_URL is required in production. Set it in Railway service variables to your persistent Postgres URL."
+        )
+    # Guard against placeholder values sometimes left accidentally
+    if any(token in _db_url for token in ["your-host", "PORT", "dbname"]):
+        raise ImproperlyConfigured(
+            "DATABASE_URL appears to be a placeholder. Please set the exact Postgres connection string from Railway."
+        )
+
 DATABASES = {
     'default': default_db
 }
@@ -183,4 +196,21 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Email settings
+# If EMAIL_HOST is provided, use SMTP; otherwise console backend (prints emails to logs)
+if os.getenv('EMAIL_HOST'):
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', '1') == '1'
+    EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', '0') == '1'  # prefer TLS (587). Use SSL with port 465.
+    EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', '15'))
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'no-reply@example.com')
+CONTACT_FORWARD_TO = os.getenv('CONTACT_FORWARD_TO', 'timtvogt@gmail.com')
 

@@ -6,6 +6,8 @@ cd /code || cd "$(dirname "$0")"
 
 # Create static dir if missing (harmless if exists)
 mkdir -p staticfiles
+# Ensure media dir exists for uploads
+mkdir -p media
 
 echo "Running database migrations..."
 if command -v poetry >/dev/null 2>&1; then
