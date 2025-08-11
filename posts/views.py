@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from django.conf import settings
 from django.core.mail import send_mail
 import logging
@@ -10,16 +10,15 @@ from .models import Post, Contact
 from .serializers import PostSerializer, ContactSerializer
 
 class PostList(generics.ListCreateAPIView):
-
     queryset = Post.objects.all()
 
     serializer_class = PostSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    parser_classes = (MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
 
 class ContactCreate(generics.CreateAPIView):

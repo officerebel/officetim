@@ -33,6 +33,11 @@ def home(_request):
                 "admin": "/admin/",
                 "health": "/healthz",
             },
+            "media": {
+                "MEDIA_URL": settings.MEDIA_URL,
+                "SERVE_MEDIA": getattr(settings, 'SERVE_MEDIA', False),
+                "STORAGE_BACKEND": getattr(settings, 'STORAGE_BACKEND', 'local'),
+            },
         }
     )
 

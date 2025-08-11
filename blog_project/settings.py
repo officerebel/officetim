@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'insecure-dev-key-change-me')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app', 'testserver']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.railway.app', 'testserver', 'officetim.com', 'www.officetim.com']
 
 # Django 4.0+ requires exact origins with scheme; wildcards are not supported.
 # You can override via env var, e.g. CSRF_TRUSTED_ORIGINS="https://your-app.up.railway.app,https://example.com"
@@ -39,7 +39,9 @@ if _csrf_from_env:
 else:
     # Default to the current Railway domain; adjust if your deploy URL changes
     CSRF_TRUSTED_ORIGINS = [
-        'https://unused-twig-production.up.railway.app'
+        'https://unused-twig-production.up.railway.app',
+        'https://officetim.com',
+        'https://www.officetim.com',
     ]
 
 
@@ -182,8 +184,10 @@ STATICFILES_STORAGE = (
 )
 
 # Media (user uploads)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Defaults to local disk, but can be overridden via env for persistent volumes
+MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
+_media_root_env = os.getenv('MEDIA_ROOT')
+MEDIA_ROOT = Path(_media_root_env) if _media_root_env else (BASE_DIR / 'media')
 
 # Allow serving media files via Django in non-DEBUG when explicitly enabled
 SERVE_MEDIA = os.getenv('SERVE_MEDIA', '1') == '1'
@@ -196,6 +200,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # django-cors-headers
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Trust proxy headers so Django knows the original host/scheme (for correct https URLs)
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Secure cookies in production
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
+# Optional remote media storage backends
+STORAGE_BACKEND = os.getenv('STORAGE_BACKEND', 'local').lower()
+if STORAGE_BACKEND == 's3':
+    INSTALLED_APPS.append('storages')
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+    AWS_S3_ENDPOINT_URL = os.getenv('AWS_S3_ENDPOINT_URL')  # optional for non-AWS providers
+    AWS_S3_SIGNATURE_VERSION = os.getenv('AWS_S3_SIGNATURE_VERSION', 's3v4')
+    AWS_S3_ADDRESSING_STYLE = os.getenv('AWS_S3_ADDRESSING_STYLE', 'virtual')
+    AWS_QUERYSTRING_AUTH = os.getenv('AWS_QUERYSTRING_AUTH', '0') == '1'
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': os.getenv('AWS_S3_CACHE_CONTROL', 'max-age=86400'),
+    }
+    _aws_custom_domain = os.getenv('AWS_S3_CUSTOM_DOMAIN')
+    if _aws_custom_domain:
+        MEDIA_URL = f"https://{_aws_custom_domain}/"
+    elif AWS_STORAGE_BUCKET_NAME and AWS_S3_REGION_NAME:
+        MEDIA_URL = f"https://{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amazonaws.com/"
+elif STORAGE_BACKEND == 'cloudinary':
+    INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    # When CLOUDINARY_URL is set, django-cloudinary-storage will generate URLs.
 
 # Email settings
 # If EMAIL_HOST is provided, use SMTP; otherwise console backend (prints emails to logs)

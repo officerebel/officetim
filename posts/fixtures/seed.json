@@ -1,0 +1,80 @@
+[
+  {
+    "model": "posts.post",
+    "pk": 1,
+    "fields": {
+      "author": 1,
+      "title": "Routing with menu",
+      "body": "Adding routing to a Vue-Vite Chrome Extension...",
+      "image": "",
+      "created_at": "2023-06-09T14:04:01.830Z",
+      "updated_at": "2023-06-09T14:04:01.830Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "posts.post",
+    "pk": 2,
+    "fields": {
+      "author": 1,
+      "title": "Rest api inside",
+      "body": "There is a rest ap inside",
+      "image": "",
+      "created_at": "2023-06-09T12:13:45.299Z",
+      "updated_at": "2023-06-09T12:13:45.299Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "posts.post",
+    "pk": 3,
+    "fields": {
+      "author": 1,
+      "title": "Pinia explained",
+      "body": "More about Pinia",
+      "image": "",
+      "created_at": "2023-06-09T12:15:03.851Z",
+      "updated_at": "2023-06-09T12:15:03.851Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "posts.post",
+    "pk": 4,
+    "fields": {
+      "author": 1,
+      "title": "axios",
+      "body": "axios",
+      "image": "",
+      "created_at": "2023-06-09T12:39:11.147Z",
+      "updated_at": "2023-06-09T12:39:11.147Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "posts.post",
+    "pk": 5,
+    "fields": {
+      "author": 1,
+      "title": "ai and tech hypes",
+      "body": "chat gpt",
+      "image": "",
+      "created_at": "2023-06-09T12:39:45.796Z",
+      "updated_at": "2023-06-09T12:39:45.796Z",
+      "tags": []
+    }
+  },
+  {
+    "model": "posts.post",
+    "pk": 6,
+    "fields": {
+      "author": 1,
+      "title": "Deploy to netlify",
+      "body": "How to deploy to netlift",
+      "image": "",
+      "created_at": "2023-06-09T19:47:30.614Z",
+      "updated_at": "2023-06-09T19:47:30.614Z",
+      "tags": []
+    }
+  }
+]
