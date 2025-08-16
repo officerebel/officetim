@@ -18,6 +18,15 @@ a, p ,li,
   transition: 0.4s;
 }
 
+/* Force light background regardless of OS dark mode */
+:root {
+  --color-background: #ffffff;
+  --color-text: var(--vt-c-text-light-1);
+}
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+}
 
 
 @media (hover: hover) {
@@ -26,15 +35,5 @@ a, p ,li,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-}
+/* Removed default Vite two-column grid and body centering to avoid
+  constraining Quasar's layout on desktop */

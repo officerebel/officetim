@@ -9,7 +9,7 @@
 
                     <div class="nav">
                         <router-link to="/">
-                        <img src="@/assets/OfficeTim.png">
+                        <img src="@/assets/OfficeTim.png" alt="OfficeTim logo">
                             </router-link>
                     </div>
                 </q-toolbar-title>
@@ -25,7 +25,7 @@
             <q-scroll-area class="fit">
                 <q-list padding class="menu-list">
 
-<!--                    <div class="sideDialog__bar dialog__bar">&lt;!&ndash;&ndash;&gt;<div class="dialog__closeHandler"><span class="dialog__closeText">Sluiten</span><span class="q-icon dialog__closeIcon" aria-hidden="true" role="presentation"><svg viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"></path></svg></span></div></div>-->
+
                     <q-item clickable v-ripple>
                         <q-item-section>
                             <RouterLink class="nav" to="/">Home </RouterLink>
@@ -39,7 +39,7 @@
 
                     <q-item clickable v-ripple>
                         <q-item-section>
-                            <RouterLink class="nav" to="blog">Blog </RouterLink>
+                            <RouterLink class="nav" to="/blog">Blog </RouterLink>
                         </q-item-section>
                     </q-item>
 

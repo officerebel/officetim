@@ -40,6 +40,12 @@ import IndexLayout from '@/views/Layout/IndexLayout.vue'
           },
 
           {
+            path: '/contact/thank-you',
+            name: 'contact-thank-you',
+            component: () => import('../views/ThankYouView.vue')
+          },
+
+          {
             path: '/detailed',
             name: 'detailed',
             component: () => import('../views/DetailedView.vue')
